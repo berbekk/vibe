@@ -192,3 +192,32 @@
   border-color: rgba(244, 63, 94, 0.35);
   color: #fda4af;
 }
+
+.panel__section--ios {
+  padding-top: 0.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.panel__note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin-bottom: 0.75rem;
+}
+
+.panel__status {
+  font-size: 0.75rem;
+  color: #fbbf24;
+  margin-top: 0.45rem;
+}
+
+.action-btn--ios {
+  width: 100%;
+  margin-top: 0.75rem;
+  border-color: rgba(96, 165, 250, 0.35);
+  color: #93c5fd;
+}
+
+.panel__actions {
+  grid-template-columns: 1fr 1fr;
+}

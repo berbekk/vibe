@@ -7,6 +7,8 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#0a0a12">
   <title>Pattern — рисование паттернов</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/controls.css">
 </head>
@@ -60,6 +62,18 @@
           <span class="toggle__track"></span>
           <span class="toggle__text">Радуга</span>
         </label>
+      </section>
+
+      <section class="panel__section panel__section--ios" id="ios-section" hidden>
+        <h2 class="panel__label">Интеграция с iOS</h2>
+        <p class="panel__note">Гироскоп вращает паттерн, «Поделиться» открывает меню iOS.</p>
+        <label class="toggle">
+          <input type="checkbox" id="motion-toggle">
+          <span class="toggle__track"></span>
+          <span class="toggle__text">Наклон устройства</span>
+        </label>
+        <p class="panel__status" id="motion-status" hidden></p>
+        <button type="button" id="share-btn" class="action-btn action-btn--ios">Поделиться рисунком</button>
       </section>
 
       <div class="panel__actions">

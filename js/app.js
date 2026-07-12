@@ -3,6 +3,9 @@ import { CanvasEngine } from './canvas-engine.js';
 import { ColorEngine } from './color-engine.js';
 import { DrawingController } from './drawing-controller.js';
 import { Controls } from './controls.js';
+import { IosMotion } from './ios-motion.js';
+import { shareCanvasImage } from './ios-share.js';
+import { isStandalonePwa } from './ios-detect.js';
 
 function showMobileApp() {
   document.getElementById('desktop-warning').hidden = true;
@@ -19,7 +22,12 @@ function initApp() {
   const hint = document.getElementById('hint');
   const engine = new CanvasEngine(canvas);
   const colorEngine = new ColorEngine();
-  const controls = new Controls(document.getElementById('app'), (event) => {
+  const motion = new IosMotion(({ rotation, hueShift }) => {
+    engine.setMotionOffset(rotation);
+    colorEngine.setMotionHueShift(hueShift);
+  });
+
+  const controls = new Controls(document.getElementById('app'), async (event) => {
     if (event.type === 'undo') {
       engine.undo();
       return;
@@ -27,6 +35,25 @@ function initApp() {
 
     if (event.type === 'clear') {
       engine.clear();
+      return;
+    }
+
+    if (event.type === 'share') {
+      const result = await shareCanvasImage(canvas);
+      if (!result.ok) {
+        controls.setMotionStatus('Поделиться недоступно в этом браузере');
+      }
+      return;
+    }
+
+    if (event.type === 'motion-toggle') {
+      if (event.enabled) {
+        await controls.enableMotion(motion);
+      } else {
+        controls.disableMotion();
+        engine.setMotionOffset(0);
+        colorEngine.setMotionHueShift(0);
+      }
       return;
     }
 
@@ -55,6 +82,10 @@ function initApp() {
   resize();
   window.addEventListener('resize', resize);
   window.addEventListener('orientationchange', resize);
+
+  if (isStandalonePwa()) {
+    hint.textContent = 'PWA-режим: добавлено на экран «Домой»';
+  }
 }
 
 function boot() {

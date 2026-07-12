@@ -1,4 +1,7 @@
 import { MODES, SYMMETRY_OPTIONS, PALETTES, DEFAULT_STATE } from './config.js';
+import { canShareFiles } from './ios-share.js';
+import { IosMotion } from './ios-motion.js';
+import { isIos } from './ios-detect.js';
 
 export class Controls {
   constructor(root, onChange) {
@@ -6,6 +9,7 @@ export class Controls {
     this.onChange = onChange;
     this.state = { ...DEFAULT_STATE };
     this.refs = {};
+    this.motion = null;
   }
 
   init() {
@@ -19,12 +23,50 @@ export class Controls {
     this.refs.clearBtn = document.getElementById('clear-btn');
     this.refs.togglePanel = document.getElementById('toggle-panel');
     this.refs.panel = document.getElementById('panel');
+    this.refs.iosSection = document.getElementById('ios-section');
+    this.refs.motionToggle = document.getElementById('motion-toggle');
+    this.refs.motionStatus = document.getElementById('motion-status');
+    this.refs.shareBtn = document.getElementById('share-btn');
 
     this.renderModes();
     this.renderSymmetry();
     this.renderPalette();
+    this.setupIosSection();
     this.bindEvents();
     this.emit();
+  }
+
+  setupIosSection() {
+    const motionSupported = IosMotion.isSupported();
+    const shareSupported = Boolean(navigator.share);
+
+    if (!isIos() || (!motionSupported && !shareSupported)) {
+      return;
+    }
+
+    this.refs.iosSection.hidden = false;
+
+    if (!motionSupported) {
+      this.refs.motionToggle.disabled = true;
+      this.setMotionStatus('Гироскоп недоступен в этом браузере');
+    }
+
+    if (!shareSupported) {
+      this.refs.shareBtn.hidden = true;
+    } else if (!canShareFiles()) {
+      this.refs.shareBtn.textContent = 'Поделиться ссылкой';
+    }
+  }
+
+  setMotionStatus(message) {
+    if (!message) {
+      this.refs.motionStatus.hidden = true;
+      this.refs.motionStatus.textContent = '';
+      return;
+    }
+
+    this.refs.motionStatus.hidden = false;
+    this.refs.motionStatus.textContent = message;
   }
 
   renderModes() {
@@ -113,6 +155,16 @@ export class Controls {
       this.emit();
     });
 
+    this.refs.motionToggle.addEventListener('change', async () => {
+      const enabled = this.refs.motionToggle.checked;
+      this.state.motion = enabled;
+      this.onChange({ type: 'motion-toggle', enabled });
+    });
+
+    this.refs.shareBtn.addEventListener('click', () => {
+      this.onChange({ type: 'share' });
+    });
+
     this.refs.togglePanel.addEventListener('click', () => {
       this.refs.panel.classList.toggle('panel--open');
     });
@@ -124,6 +176,29 @@ export class Controls {
     this.refs.clearBtn.addEventListener('click', () => {
       this.onChange({ type: 'clear' });
     });
+  }
+
+  async enableMotion(motionController) {
+    this.motion = motionController;
+    const granted = await motionController.requestAccess();
+
+    if (!granted) {
+      this.refs.motionToggle.checked = false;
+      this.state.motion = false;
+      this.setMotionStatus('Нужно разрешить доступ к датчикам движения');
+      return false;
+    }
+
+    this.setMotionStatus('Наклоняйте iPhone — паттерн вращается');
+    return true;
+  }
+
+  disableMotion() {
+    if (this.motion) {
+      this.motion.stop();
+    }
+
+    this.setMotionStatus('');
   }
 
   emit() {

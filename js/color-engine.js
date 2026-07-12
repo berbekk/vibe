@@ -6,6 +6,7 @@ export class ColorEngine {
     this.colorIndex = 0;
     this.palette = PALETTES[0].colors;
     this.rainbow = true;
+    this.motionHueShift = 0;
   }
 
   setPalette(paletteId) {
@@ -17,7 +18,7 @@ export class ColorEngine {
   }
 
   next(moveDistance) {
-    this.hue = (this.hue + 1.5 + moveDistance * 0.08) % 360;
+    this.hue = (this.hue + 1.5 + moveDistance * 0.08 + this.motionHueShift * 0.02) % 360;
 
     if (this.rainbow) {
       return `hsla(${this.hue}, 88%, 68%, 0.9)`;
@@ -30,5 +31,9 @@ export class ColorEngine {
 
   setRainbow(enabled) {
     this.rainbow = enabled;
+  }
+
+  setMotionHueShift(shift) {
+    this.motionHueShift = shift;
   }
 }

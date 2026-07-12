@@ -1,0 +1,18 @@
+{
+  "name": "Pattern",
+  "short_name": "Pattern",
+  "description": "Рисование симметричных паттернов пальцем",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a12",
+  "theme_color": "#0a0a12",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
