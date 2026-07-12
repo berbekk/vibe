@@ -49,20 +49,7 @@ export class CanvasEngine {
   }
 
   paintBackground(width, height) {
-    const gradient = this.ctx.createRadialGradient(
-      width * 0.5,
-      height * 0.35,
-      0,
-      width * 0.5,
-      height * 0.5,
-      Math.max(width, height) * 0.75
-    );
-
-    gradient.addColorStop(0, '#141428');
-    gradient.addColorStop(0.45, '#0d0d18');
-    gradient.addColorStop(1, '#06060c');
-
-    this.ctx.fillStyle = gradient;
+    this.ctx.fillStyle = '#000000';
     this.ctx.fillRect(0, 0, width, height);
     this.hasDrawing = false;
   }

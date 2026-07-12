@@ -16,6 +16,7 @@ export class Controls {
     this.refs.symmetryRow = document.getElementById('symmetry-row');
     this.refs.palette = document.getElementById('palette');
     this.refs.brushSize = document.getElementById('brush-size');
+    this.refs.brushSizeValue = document.getElementById('brush-size-value');
     this.refs.glowToggle = document.getElementById('glow-toggle');
     this.refs.rainbowToggle = document.getElementById('rainbow-toggle');
     this.refs.togglePanel = document.getElementById('toggle-panel');
@@ -38,28 +39,27 @@ export class Controls {
   }
 
   setupIosSection() {
-    const motionSupported = IosMotion.isSupported();
-    const shareSupported = Boolean(navigator.share);
-
     if (!isIos()) {
       return;
     }
 
     document.documentElement.classList.add('ios');
 
-    if (motionSupported) {
+    if (IosMotion.isSupported()) {
       this.refs.iosSection.hidden = false;
     }
 
-    if (shareSupported) {
+    if (navigator.share) {
       this.refs.dockShare.hidden = false;
     }
   }
 
   setPanelOpen(open) {
-    this.refs.panel.classList.toggle('panel--open', open);
+    this.refs.panel.classList.toggle('sheet--open', open);
     this.refs.panelBackdrop.hidden = !open;
-    this.root.classList.toggle('app--panel-open', open);
+    this.root.classList.toggle('app--sheet-open', open);
+    this.refs.togglePanel.classList.toggle('tab-bar__item--active', open);
+    this.refs.togglePanel.setAttribute('aria-current', open ? 'page' : 'false');
   }
 
   setMotionStatus(message) {
@@ -77,8 +77,10 @@ export class Controls {
     this.refs.modeGrid.innerHTML = MODES.map((mode) => `
       <button
         type="button"
-        class="mode-btn${mode.id === this.state.mode ? ' mode-btn--active' : ''}"
+        class="segmented__item${mode.id === this.state.mode ? ' segmented__item--active' : ''}"
         data-mode="${mode.id}"
+        role="tab"
+        aria-selected="${mode.id === this.state.mode}"
       >${mode.label}</button>
     `).join('');
   }
@@ -87,7 +89,7 @@ export class Controls {
     this.refs.symmetryRow.innerHTML = SYMMETRY_OPTIONS.map((value) => `
       <button
         type="button"
-        class="symmetry-btn${value === this.state.symmetry ? ' symmetry-btn--active' : ''}"
+        class="chip${value === this.state.symmetry ? ' chip--active' : ''}"
         data-symmetry="${value}"
       >${value}</button>
     `).join('');
@@ -146,6 +148,7 @@ export class Controls {
 
     this.refs.brushSize.addEventListener('input', () => {
       this.state.brushSize = Number(this.refs.brushSize.value);
+      this.refs.brushSizeValue.textContent = String(this.state.brushSize);
       this.emit();
     });
 
@@ -166,7 +169,7 @@ export class Controls {
     });
 
     this.refs.togglePanel.addEventListener('click', () => {
-      const willOpen = !this.refs.panel.classList.contains('panel--open');
+      const willOpen = !this.refs.panel.classList.contains('sheet--open');
       this.setPanelOpen(willOpen);
     });
 
@@ -198,11 +201,11 @@ export class Controls {
     if (!granted) {
       this.refs.motionToggle.checked = false;
       this.state.motion = false;
-      this.setMotionStatus('Разрешите доступ к датчикам движения');
+      this.setMotionStatus('Разрешите доступ к датчикам движения в настройках Safari.');
       return false;
     }
 
-    this.setMotionStatus('Наклоняйте iPhone — паттерн вращается');
+    this.setMotionStatus('Наклоняйте iPhone, чтобы вращать узор.');
     return true;
   }
 
