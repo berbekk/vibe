@@ -7,9 +7,12 @@ export class DrawingController {
     this.colorEngine = colorEngine;
     this.getState = getState;
     this.isDrawing = false;
+    this.hasStroke = false;
     this.lastPoint = null;
-    this.pendingPoints = [];
     this.onFirstStroke = null;
+    this.onStrokeStart = null;
+    this.onStrokeEnd = null;
+    this.onCanvasTap = null;
   }
 
   bind() {
@@ -25,16 +28,11 @@ export class DrawingController {
     }
 
     event.preventDefault();
-    this.engine.saveState();
     this.isDrawing = true;
+    this.hasStroke = false;
 
     const touch = event.touches[0];
     this.lastPoint = getCanvasPoint(this.canvas, touch.clientX, touch.clientY);
-    this.pendingPoints = [this.lastPoint];
-
-    if (this.onFirstStroke) {
-      this.onFirstStroke();
-    }
   };
 
   onTouchMove = (event) => {
@@ -43,6 +41,19 @@ export class DrawingController {
     }
 
     event.preventDefault();
+
+    if (!this.hasStroke) {
+      this.engine.saveState();
+      this.hasStroke = true;
+
+      if (this.onStrokeStart) {
+        this.onStrokeStart();
+      }
+
+      if (this.onFirstStroke) {
+        this.onFirstStroke();
+      }
+    }
 
     const touch = event.touches[0];
     const point = getCanvasPoint(this.canvas, touch.clientX, touch.clientY);
@@ -76,8 +87,17 @@ export class DrawingController {
     }
 
     event.preventDefault();
+
+    if (!this.hasStroke && this.onCanvasTap) {
+      this.onCanvasTap();
+    }
+
+    if (this.hasStroke && this.onStrokeEnd) {
+      this.onStrokeEnd();
+    }
+
     this.isDrawing = false;
+    this.hasStroke = false;
     this.lastPoint = null;
-    this.pendingPoints = [];
   };
 }

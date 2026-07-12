@@ -9,9 +9,11 @@ export class Controls {
     this.state = { ...DEFAULT_STATE };
     this.refs = {};
     this.motion = null;
+    this.activePopover = null;
   }
 
   init() {
+    this.refs.chrome = document.getElementById('chrome');
     this.refs.modeGrid = document.getElementById('mode-grid');
     this.refs.symmetryRow = document.getElementById('symmetry-row');
     this.refs.palette = document.getElementById('palette');
@@ -19,16 +21,19 @@ export class Controls {
     this.refs.brushSizeValue = document.getElementById('brush-size-value');
     this.refs.glowToggle = document.getElementById('glow-toggle');
     this.refs.rainbowToggle = document.getElementById('rainbow-toggle');
-    this.refs.togglePanel = document.getElementById('toggle-panel');
-    this.refs.panel = document.getElementById('panel');
-    this.refs.panelBackdrop = document.getElementById('panel-backdrop');
-    this.refs.panelHandle = document.getElementById('panel-handle');
     this.refs.dockUndo = document.getElementById('dock-undo');
     this.refs.dockShare = document.getElementById('dock-share');
     this.refs.dockClear = document.getElementById('dock-clear');
-    this.refs.iosSection = document.getElementById('ios-section');
+    this.refs.btnSettings = document.getElementById('btn-settings');
     this.refs.motionToggle = document.getElementById('motion-toggle');
     this.refs.motionStatus = document.getElementById('motion-status');
+    this.refs.popovers = {
+      brush: document.getElementById('popover-brush'),
+      mode: document.getElementById('popover-mode'),
+      color: document.getElementById('popover-color'),
+      symmetry: document.getElementById('popover-symmetry'),
+      settings: document.getElementById('popover-settings')
+    };
 
     this.renderModes();
     this.renderSymmetry();
@@ -45,21 +50,58 @@ export class Controls {
 
     document.documentElement.classList.add('ios');
 
-    if (IosMotion.isSupported()) {
-      this.refs.iosSection.hidden = false;
-    }
-
     if (navigator.share) {
       this.refs.dockShare.hidden = false;
     }
+
+    if (IosMotion.isSupported()) {
+      this.refs.btnSettings.hidden = false;
+    }
   }
 
-  setPanelOpen(open) {
-    this.refs.panel.classList.toggle('sheet--open', open);
-    this.refs.panelBackdrop.hidden = !open;
-    this.root.classList.toggle('app--sheet-open', open);
-    this.refs.togglePanel.classList.toggle('tab-bar__item--active', open);
-    this.refs.togglePanel.setAttribute('aria-current', open ? 'page' : 'false');
+  setChromeVisible(visible) {
+    this.refs.chrome.classList.toggle('chrome--hidden', !visible);
+  }
+
+  closePopover() {
+    Object.values(this.refs.popovers).forEach((node) => {
+      node.hidden = true;
+    });
+
+    this.refs.chrome.querySelectorAll('.tool-btn--active').forEach((button) => {
+      button.classList.remove('tool-btn--active');
+    });
+
+    this.activePopover = null;
+  }
+
+  openPopover(name, anchor) {
+    if (this.activePopover === name) {
+      this.closePopover();
+      return;
+    }
+
+    this.closePopover();
+    const popover = this.refs.popovers[name];
+    if (!popover || !anchor) {
+      return;
+    }
+
+    popover.hidden = false;
+    anchor.classList.add('tool-btn--active');
+    this.activePopover = name;
+
+    const toolbar = anchor.closest('.toolbar');
+    const toolbarRect = toolbar.getBoundingClientRect();
+    const anchorRect = anchor.getBoundingClientRect();
+    const popoverWidth = popover.offsetWidth;
+    const left = Math.min(
+      Math.max(anchorRect.left + anchorRect.width / 2 - popoverWidth / 2, 12),
+      window.innerWidth - popoverWidth - 12
+    );
+
+    popover.style.top = `${toolbarRect.bottom + 8}px`;
+    popover.style.left = `${left}px`;
   }
 
   setMotionStatus(message) {
@@ -79,8 +121,6 @@ export class Controls {
         type="button"
         class="segmented__item${mode.id === this.state.mode ? ' segmented__item--active' : ''}"
         data-mode="${mode.id}"
-        role="tab"
-        aria-selected="${mode.id === this.state.mode}"
       >${mode.label}</button>
     `).join('');
   }
@@ -113,6 +153,15 @@ export class Controls {
   }
 
   bindEvents() {
+    this.refs.chrome.querySelectorAll('[data-popover]').forEach((button) => {
+      button.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const id = button.dataset.popover.replace('popover-', '');
+        this.setChromeVisible(true);
+        this.openPopover(id, button);
+      });
+    });
+
     this.refs.modeGrid.addEventListener('click', (event) => {
       const button = event.target.closest('[data-mode]');
       if (!button) {
@@ -168,19 +217,6 @@ export class Controls {
       this.onChange({ type: 'motion-toggle', enabled });
     });
 
-    this.refs.togglePanel.addEventListener('click', () => {
-      const willOpen = !this.refs.panel.classList.contains('sheet--open');
-      this.setPanelOpen(willOpen);
-    });
-
-    this.refs.panelBackdrop.addEventListener('click', () => {
-      this.setPanelOpen(false);
-    });
-
-    this.refs.panelHandle.addEventListener('click', () => {
-      this.setPanelOpen(false);
-    });
-
     this.refs.dockUndo.addEventListener('click', () => {
       this.onChange({ type: 'undo' });
     });
@@ -192,6 +228,12 @@ export class Controls {
     this.refs.dockClear.addEventListener('click', () => {
       this.onChange({ type: 'clear' });
     });
+
+    document.addEventListener('pointerdown', (event) => {
+      if (!this.refs.chrome.contains(event.target)) {
+        this.closePopover();
+      }
+    });
   }
 
   async enableMotion(motionController) {
@@ -201,7 +243,7 @@ export class Controls {
     if (!granted) {
       this.refs.motionToggle.checked = false;
       this.state.motion = false;
-      this.setMotionStatus('Разрешите доступ к датчикам движения в настройках Safari.');
+      this.setMotionStatus('Разрешите доступ к датчикам движения.');
       return false;
     }
 

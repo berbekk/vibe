@@ -6,6 +6,7 @@ import { Controls } from './controls.js';
 import { IosMotion } from './ios-motion.js';
 import { shareCanvasImage } from './ios-share.js';
 import { bindVisualViewport } from './viewport.js';
+import { bindChromeAutoHide } from './chrome.js';
 
 function showMobileApp() {
   document.getElementById('desktop-warning').hidden = true;
@@ -19,6 +20,7 @@ function showDesktopWarning() {
 
 function initApp() {
   const canvas = document.getElementById('canvas');
+  const chrome = document.getElementById('chrome');
   const engine = new CanvasEngine(canvas);
   const colorEngine = new ColorEngine();
   const motion = new IosMotion(({ rotation, hueShift }) => {
@@ -72,10 +74,11 @@ function initApp() {
   );
 
   drawing.onFirstStroke = () => {
-    controls.setPanelOpen(false);
+    controls.closePopover();
   };
 
   drawing.bind();
+  bindChromeAutoHide(chrome, drawing);
   bindVisualViewport(() => engine.resize());
 }
 

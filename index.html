@@ -27,92 +27,76 @@
   <div id="app" class="app" hidden>
     <canvas id="canvas" class="canvas"></canvas>
 
-    <nav class="tab-bar" id="tab-bar" aria-label="Действия">
-      <button type="button" id="toggle-panel" class="tab-bar__item tab-bar__item--active" aria-label="Кисть" aria-current="page">
-        <img src="icons/tab-brush.svg" alt="" class="tab-bar__icon" width="24" height="24">
-        <span class="tab-bar__label">Кисть</span>
-      </button>
-      <button type="button" id="dock-undo" class="tab-bar__item" aria-label="Отменить">
-        <img src="icons/tab-undo.svg" alt="" class="tab-bar__icon" width="24" height="24">
-        <span class="tab-bar__label">Отменить</span>
-      </button>
-      <button type="button" id="dock-share" class="tab-bar__item" aria-label="Поделиться" hidden>
-        <img src="icons/tab-share.svg" alt="" class="tab-bar__icon" width="24" height="24">
-        <span class="tab-bar__label">Поделиться</span>
-      </button>
-      <button type="button" id="dock-clear" class="tab-bar__item" aria-label="Очистить">
-        <img src="icons/tab-trash.svg" alt="" class="tab-bar__icon" width="24" height="24">
-        <span class="tab-bar__label">Очистить</span>
-      </button>
-    </nav>
-
-    <div id="panel-backdrop" class="sheet-scrim" hidden></div>
-
-    <aside id="panel" class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
-      <div class="sheet__grabber" id="panel-handle" aria-hidden="true"></div>
-
-      <header class="sheet__header">
-        <h2 class="sheet__title" id="sheet-title">Кисть</h2>
+    <div id="chrome" class="chrome">
+      <header class="toolbar">
+        <div class="toolbar__group">
+          <button type="button" id="btn-brush" class="tool-btn" data-popover="popover-brush" aria-label="Кисть">
+            <img src="icons/tab-brush.svg" alt="" width="22" height="22">
+          </button>
+          <button type="button" id="btn-mode" class="tool-btn" data-popover="popover-mode" aria-label="Режим">
+            <img src="icons/tab-mode.svg" alt="" width="22" height="22">
+          </button>
+          <button type="button" id="btn-color" class="tool-btn" data-popover="popover-color" aria-label="Цвет">
+            <img src="icons/tab-color.svg" alt="" width="22" height="22">
+          </button>
+          <button type="button" id="btn-symmetry" class="tool-btn" data-popover="popover-symmetry" aria-label="Симметрия">
+            <img src="icons/tab-symmetry.svg" alt="" width="22" height="22">
+          </button>
+        </div>
+        <div class="toolbar__group">
+          <button type="button" id="dock-undo" class="tool-btn" aria-label="Отменить">
+            <img src="icons/tab-undo.svg" alt="" width="22" height="22">
+          </button>
+          <button type="button" id="dock-share" class="tool-btn" aria-label="Поделиться" hidden>
+            <img src="icons/tab-share.svg" alt="" width="22" height="22">
+          </button>
+          <button type="button" id="dock-clear" class="tool-btn" aria-label="Очистить">
+            <img src="icons/tab-trash.svg" alt="" width="22" height="22">
+          </button>
+          <button type="button" id="btn-settings" class="tool-btn" data-popover="popover-settings" aria-label="Настройки" hidden>
+            <img src="icons/tab-settings.svg" alt="" width="22" height="22">
+          </button>
+        </div>
       </header>
 
-      <div class="sheet__scroll">
-        <section class="group">
-          <h3 class="group__title">Режим</h3>
-          <div class="group__card">
-            <div class="segmented" id="mode-grid" role="tablist" aria-label="Режим рисования"></div>
-          </div>
-        </section>
-
-        <section class="group">
-          <h3 class="group__title">Симметрия</h3>
-          <div class="group__card group__card--chips">
-            <div class="chip-row" id="symmetry-row"></div>
-          </div>
-        </section>
-
-        <section class="group">
-          <h3 class="group__title">Цвет</h3>
-          <div class="group__card group__card--palette">
-            <div class="palette" id="palette"></div>
-          </div>
-        </section>
-
-        <section class="group">
-          <h3 class="group__title">Размер</h3>
-          <div class="group__card group__card--slider">
-            <div class="slider-row">
-              <span class="slider-row__label">Толщина линии</span>
-              <span class="slider-row__value" id="brush-size-value">8</span>
-            </div>
-            <input type="range" id="brush-size" class="slider" min="2" max="24" value="8" aria-label="Толщина линии">
-          </div>
-        </section>
-
-        <section class="group">
-          <div class="group__card group__card--list">
-            <label class="list-row">
-              <span class="list-row__label">Свечение</span>
-              <input type="checkbox" id="glow-toggle" class="switch" checked>
-            </label>
-            <label class="list-row">
-              <span class="list-row__label">Радуга</span>
-              <input type="checkbox" id="rainbow-toggle" class="switch" checked>
-            </label>
-          </div>
-        </section>
-
-        <section class="group" id="ios-section" hidden>
-          <h3 class="group__title">Датчики</h3>
-          <div class="group__card group__card--list">
-            <label class="list-row">
-              <span class="list-row__label">Наклон устройства</span>
-              <input type="checkbox" id="motion-toggle" class="switch">
-            </label>
-            <p class="list-footnote" id="motion-status" hidden></p>
-          </div>
-        </section>
+      <div id="popover-brush" class="popover" hidden>
+        <div class="popover__row">
+          <span class="popover__label">Размер</span>
+          <span class="popover__value" id="brush-size-value">8</span>
+        </div>
+        <input type="range" id="brush-size" class="slider" min="2" max="24" value="8">
+        <div class="popover__toggles">
+          <label class="popover__toggle">
+            <span>Свечение</span>
+            <input type="checkbox" id="glow-toggle" class="switch" checked>
+          </label>
+          <label class="popover__toggle">
+            <span>Радуга</span>
+            <input type="checkbox" id="rainbow-toggle" class="switch" checked>
+          </label>
+        </div>
       </div>
-    </aside>
+
+      <div id="popover-mode" class="popover" hidden>
+        <div class="segmented" id="mode-grid"></div>
+      </div>
+
+      <div id="popover-color" class="popover" hidden>
+        <div class="palette" id="palette"></div>
+      </div>
+
+      <div id="popover-symmetry" class="popover" hidden>
+        <div class="chip-row" id="symmetry-row"></div>
+      </div>
+
+      <div id="popover-settings" class="popover" hidden>
+        <label class="popover__toggle">
+          <span>Наклон устройства</span>
+          <input type="checkbox" id="motion-toggle" class="switch">
+        </label>
+        <p class="popover__note" id="motion-status" hidden></p>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="js/app.js"></script>
