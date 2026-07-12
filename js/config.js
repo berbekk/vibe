@@ -25,5 +25,6 @@ export const DEFAULT_STATE = {
   paletteId: 'aurora',
   brushSize: 8,
   glow: true,
-  rainbow: true
+  rainbow: true,
+  motion: false
 };

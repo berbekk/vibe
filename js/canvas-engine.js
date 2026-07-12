@@ -4,6 +4,7 @@ export class CanvasEngine {
     this.ctx = canvas.getContext('2d');
     this.center = { x: 0, y: 0 };
     this.undoStack = [];
+    this.motionOffset = 0;
   }
 
   resize() {
@@ -65,12 +66,22 @@ export class CanvasEngine {
     this.paintBackground(rect.width, rect.height);
   }
 
+  setMotionOffset(offset) {
+    this.motionOffset = offset;
+  }
+
+  toBlob() {
+    return new Promise((resolve) => {
+      this.canvas.toBlob(resolve, 'image/png');
+    });
+  }
+
   drawSegment(points, options) {
     const { mode, symmetry, color, brushSize, glow } = options;
     const segments = mode === 'flow' ? 1 : symmetry;
 
     for (let i = 0; i < segments; i += 1) {
-      const angle = (Math.PI * 2 / segments) * i;
+      const angle = (Math.PI * 2 / segments) * i + this.motionOffset;
 
       this.ctx.save();
       this.applyTransform(angle, false, mode);
