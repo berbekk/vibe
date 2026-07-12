@@ -1,0 +1,137 @@
+export class CanvasEngine {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.center = { x: 0, y: 0 };
+    this.undoStack = [];
+  }
+
+  resize() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = this.canvas.getBoundingClientRect();
+
+    this.canvas.width = Math.floor(rect.width * dpr);
+    this.canvas.height = Math.floor(rect.height * dpr);
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    this.center = {
+      x: rect.width / 2,
+      y: rect.height / 2
+    };
+
+    this.paintBackground(rect.width, rect.height);
+  }
+
+  paintBackground(width, height) {
+    const gradient = this.ctx.createRadialGradient(
+      width * 0.5,
+      height * 0.35,
+      0,
+      width * 0.5,
+      height * 0.5,
+      Math.max(width, height) * 0.75
+    );
+
+    gradient.addColorStop(0, '#141428');
+    gradient.addColorStop(0.45, '#0d0d18');
+    gradient.addColorStop(1, '#06060c');
+
+    this.ctx.fillStyle = gradient;
+    this.ctx.fillRect(0, 0, width, height);
+  }
+
+  saveState() {
+    const snapshot = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+    this.undoStack.push(snapshot);
+
+    if (this.undoStack.length > 15) {
+      this.undoStack.shift();
+    }
+  }
+
+  undo() {
+    const snapshot = this.undoStack.pop();
+    if (!snapshot) {
+      return false;
+    }
+
+    this.ctx.putImageData(snapshot, 0, 0);
+    return true;
+  }
+
+  clear() {
+    const rect = this.canvas.getBoundingClientRect();
+    this.undoStack = [];
+    this.paintBackground(rect.width, rect.height);
+  }
+
+  drawSegment(points, options) {
+    const { mode, symmetry, color, brushSize, glow } = options;
+    const segments = mode === 'flow' ? 1 : symmetry;
+
+    for (let i = 0; i < segments; i += 1) {
+      const angle = (Math.PI * 2 / segments) * i;
+
+      this.ctx.save();
+      this.applyTransform(angle, false, mode);
+      this.strokePath(points, color, brushSize, glow);
+      this.ctx.restore();
+
+      if (mode === 'mandala' || mode === 'kaleidoscope') {
+        this.ctx.save();
+        this.applyTransform(angle, true, mode);
+        this.strokePath(points, color, brushSize, glow);
+        this.ctx.restore();
+      }
+
+      if (mode === 'mirror') {
+        this.ctx.save();
+        this.applyTransform(angle, true, 'mirror');
+        this.strokePath(points, color, brushSize, glow);
+        this.ctx.restore();
+      }
+    }
+  }
+
+  applyTransform(angle, mirror, mode) {
+    this.ctx.translate(this.center.x, this.center.y);
+    this.ctx.rotate(angle);
+
+    if (mirror) {
+      if (mode === 'mirror') {
+        this.ctx.scale(-1, 1);
+      } else {
+        this.ctx.scale(1, -1);
+      }
+    }
+
+    this.ctx.translate(-this.center.x, -this.center.y);
+  }
+
+  strokePath(points, color, brushSize, glow) {
+    if (points.length < 2) {
+      return;
+    }
+
+    this.ctx.save();
+    this.ctx.lineCap = 'round';
+    this.ctx.lineJoin = 'round';
+    this.ctx.lineWidth = brushSize;
+    this.ctx.strokeStyle = color;
+
+    if (glow) {
+      this.ctx.shadowBlur = brushSize * 1.6;
+      this.ctx.shadowColor = color;
+    }
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(points[0].x, points[0].y);
+
+    for (let i = 1; i < points.length; i += 1) {
+      this.ctx.lineTo(points[i].x, points[i].y);
+    }
+
+    this.ctx.stroke();
+    this.ctx.restore();
+  }
+}
