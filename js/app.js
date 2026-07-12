@@ -5,7 +5,6 @@ import { DrawingController } from './drawing-controller.js';
 import { Controls } from './controls.js';
 import { IosMotion } from './ios-motion.js';
 import { shareCanvasImage } from './ios-share.js';
-import { isStandalonePwa } from './ios-detect.js';
 import { bindVisualViewport } from './viewport.js';
 
 function showMobileApp() {
@@ -20,7 +19,6 @@ function showDesktopWarning() {
 
 function initApp() {
   const canvas = document.getElementById('canvas');
-  const hint = document.getElementById('hint');
   const engine = new CanvasEngine(canvas);
   const colorEngine = new ColorEngine();
   const motion = new IosMotion(({ rotation, hueShift }) => {
@@ -42,7 +40,7 @@ function initApp() {
     if (event.type === 'share') {
       const result = await shareCanvasImage(canvas);
       if (!result.ok) {
-        controls.setMotionStatus('Поделиться недоступно');
+        controls.setMotionStatus('Поделиться недоступно.');
       }
       return;
     }
@@ -74,17 +72,11 @@ function initApp() {
   );
 
   drawing.onFirstStroke = () => {
-    hint.classList.add('hint--hidden');
     controls.setPanelOpen(false);
   };
 
   drawing.bind();
-
   bindVisualViewport(() => engine.resize());
-
-  if (isStandalonePwa()) {
-    hint.textContent = 'Рисуйте пальцем по экрану';
-  }
 }
 
 function boot() {

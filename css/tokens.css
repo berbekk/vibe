@@ -1,0 +1,31 @@
+:root {
+  --color-bg: #000000;
+  --color-bg-elevated: #1c1c1e;
+  --color-bg-grouped: #2c2c2e;
+  --color-bg-sheet: #1c1c1e;
+  --color-fill: rgba(120, 120, 128, 0.36);
+  --color-fill-secondary: rgba(120, 120, 128, 0.24);
+  --color-separator: rgba(84, 84, 88, 0.65);
+  --color-label: #ffffff;
+  --color-label-secondary: rgba(235, 235, 245, 0.6);
+  --color-label-tertiary: rgba(235, 235, 245, 0.3);
+  --color-tint: #0a84ff;
+  --color-tint-pressed: #0077e6;
+  --color-green: #30d158;
+  --color-red: #ff453a;
+  --color-orange: #ff9f0a;
+  --radius-group: 0.75rem;
+  --radius-sheet: 0.625rem;
+  --font-large-title: 2.125rem;
+  --font-title3: 1.25rem;
+  --font-body: 1.0625rem;
+  --font-footnote: 0.8125rem;
+  --font-caption: 0.75rem;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --tab-bar-height: 3.0625rem;
+  --app-height: 100dvh;
+  --viewport-offset-top: 0px;
+}

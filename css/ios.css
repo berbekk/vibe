@@ -7,16 +7,8 @@ html.ios body {
   width: 100%;
 }
 
-.ios .panel {
-  padding-bottom: calc(1rem + var(--safe-bottom));
-}
-
-.ios .bottom-dock {
-  padding-bottom: calc(0.65rem + var(--safe-bottom));
-}
-
 .ios .canvas {
-  bottom: calc(var(--dock-height) + var(--safe-bottom));
+  bottom: calc(var(--tab-bar-height) + var(--safe-bottom));
 }
 
 @supports (-webkit-touch-callout: none) {
@@ -30,28 +22,20 @@ html.ios body {
 }
 
 @media (orientation: landscape) and (max-height: 500px) {
-  .bottom-dock {
-    padding-top: 0.35rem;
-    padding-bottom: calc(0.35rem + var(--safe-bottom));
-  }
-
-  .dock-btn {
-    min-height: 2.6rem;
-  }
-
-  .dock-btn__label {
+  .tab-bar__label {
     display: none;
   }
 
-  .panel {
-    max-height: min(82dvh, calc(var(--app-height) - 3rem));
+  .tab-bar__item {
+    min-height: 2.75rem;
+    padding-top: 0.5rem;
   }
 
-  .top-bar {
-    display: none;
+  .sheet {
+    max-height: min(85dvh, calc(var(--app-height) - 2.5rem));
   }
 
   .canvas {
-    bottom: calc(3.2rem + var(--safe-bottom));
+    bottom: calc(2.75rem + var(--safe-bottom));
   }
 }
