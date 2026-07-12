@@ -5,22 +5,47 @@ export class CanvasEngine {
     this.center = { x: 0, y: 0 };
     this.undoStack = [];
     this.motionOffset = 0;
+    this.hasDrawing = false;
+    this.displayWidth = 0;
+    this.displayHeight = 0;
   }
 
   resize() {
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
     const rect = this.canvas.getBoundingClientRect();
+    const nextWidth = Math.floor(rect.width * dpr);
+    const nextHeight = Math.floor(rect.height * dpr);
+    const snapshot = this.captureSnapshot();
 
-    this.canvas.width = Math.floor(rect.width * dpr);
-    this.canvas.height = Math.floor(rect.height * dpr);
+    this.canvas.width = nextWidth;
+    this.canvas.height = nextHeight;
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+    this.displayWidth = rect.width;
+    this.displayHeight = rect.height;
     this.center = {
       x: rect.width / 2,
       y: rect.height / 2
     };
 
+    if (snapshot) {
+      this.ctx.drawImage(snapshot, 0, 0, rect.width, rect.height);
+      return;
+    }
+
     this.paintBackground(rect.width, rect.height);
+  }
+
+  captureSnapshot() {
+    if (!this.hasDrawing || this.canvas.width === 0 || this.canvas.height === 0) {
+      return null;
+    }
+
+    const snapshot = document.createElement('canvas');
+    snapshot.width = this.canvas.width;
+    snapshot.height = this.canvas.height;
+    snapshot.getContext('2d').drawImage(this.canvas, 0, 0);
+    return snapshot;
   }
 
   paintBackground(width, height) {
@@ -39,6 +64,7 @@ export class CanvasEngine {
 
     this.ctx.fillStyle = gradient;
     this.ctx.fillRect(0, 0, width, height);
+    this.hasDrawing = false;
   }
 
   saveState() {
@@ -57,6 +83,7 @@ export class CanvasEngine {
     }
 
     this.ctx.putImageData(snapshot, 0, 0);
+    this.hasDrawing = this.undoStack.length > 0;
     return true;
   }
 
@@ -102,6 +129,8 @@ export class CanvasEngine {
         this.ctx.restore();
       }
     }
+
+    this.hasDrawing = true;
   }
 
   applyTransform(angle, mirror, mode) {

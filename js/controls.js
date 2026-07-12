@@ -1,5 +1,4 @@
 import { MODES, SYMMETRY_OPTIONS, PALETTES, DEFAULT_STATE } from './config.js';
-import { canShareFiles } from './ios-share.js';
 import { IosMotion } from './ios-motion.js';
 import { isIos } from './ios-detect.js';
 
@@ -19,14 +18,16 @@ export class Controls {
     this.refs.brushSize = document.getElementById('brush-size');
     this.refs.glowToggle = document.getElementById('glow-toggle');
     this.refs.rainbowToggle = document.getElementById('rainbow-toggle');
-    this.refs.undoBtn = document.getElementById('undo-btn');
-    this.refs.clearBtn = document.getElementById('clear-btn');
     this.refs.togglePanel = document.getElementById('toggle-panel');
     this.refs.panel = document.getElementById('panel');
+    this.refs.panelBackdrop = document.getElementById('panel-backdrop');
+    this.refs.panelHandle = document.getElementById('panel-handle');
+    this.refs.dockUndo = document.getElementById('dock-undo');
+    this.refs.dockShare = document.getElementById('dock-share');
+    this.refs.dockClear = document.getElementById('dock-clear');
     this.refs.iosSection = document.getElementById('ios-section');
     this.refs.motionToggle = document.getElementById('motion-toggle');
     this.refs.motionStatus = document.getElementById('motion-status');
-    this.refs.shareBtn = document.getElementById('share-btn');
 
     this.renderModes();
     this.renderSymmetry();
@@ -40,22 +41,25 @@ export class Controls {
     const motionSupported = IosMotion.isSupported();
     const shareSupported = Boolean(navigator.share);
 
-    if (!isIos() || (!motionSupported && !shareSupported)) {
+    if (!isIos()) {
       return;
     }
 
-    this.refs.iosSection.hidden = false;
+    document.documentElement.classList.add('ios');
 
-    if (!motionSupported) {
-      this.refs.motionToggle.disabled = true;
-      this.setMotionStatus('Гироскоп недоступен в этом браузере');
+    if (motionSupported) {
+      this.refs.iosSection.hidden = false;
     }
 
-    if (!shareSupported) {
-      this.refs.shareBtn.hidden = true;
-    } else if (!canShareFiles()) {
-      this.refs.shareBtn.textContent = 'Поделиться ссылкой';
+    if (shareSupported) {
+      this.refs.dockShare.hidden = false;
     }
+  }
+
+  setPanelOpen(open) {
+    this.refs.panel.classList.toggle('panel--open', open);
+    this.refs.panelBackdrop.hidden = !open;
+    this.root.classList.toggle('app--panel-open', open);
   }
 
   setMotionStatus(message) {
@@ -161,19 +165,28 @@ export class Controls {
       this.onChange({ type: 'motion-toggle', enabled });
     });
 
-    this.refs.shareBtn.addEventListener('click', () => {
-      this.onChange({ type: 'share' });
-    });
-
     this.refs.togglePanel.addEventListener('click', () => {
-      this.refs.panel.classList.toggle('panel--open');
+      const willOpen = !this.refs.panel.classList.contains('panel--open');
+      this.setPanelOpen(willOpen);
     });
 
-    this.refs.undoBtn.addEventListener('click', () => {
+    this.refs.panelBackdrop.addEventListener('click', () => {
+      this.setPanelOpen(false);
+    });
+
+    this.refs.panelHandle.addEventListener('click', () => {
+      this.setPanelOpen(false);
+    });
+
+    this.refs.dockUndo.addEventListener('click', () => {
       this.onChange({ type: 'undo' });
     });
 
-    this.refs.clearBtn.addEventListener('click', () => {
+    this.refs.dockShare.addEventListener('click', () => {
+      this.onChange({ type: 'share' });
+    });
+
+    this.refs.dockClear.addEventListener('click', () => {
       this.onChange({ type: 'clear' });
     });
   }
@@ -185,7 +198,7 @@ export class Controls {
     if (!granted) {
       this.refs.motionToggle.checked = false;
       this.state.motion = false;
-      this.setMotionStatus('Нужно разрешить доступ к датчикам движения');
+      this.setMotionStatus('Разрешите доступ к датчикам движения');
       return false;
     }
 

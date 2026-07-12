@@ -4,13 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
   <meta name="theme-color" content="#0a0a12">
   <title>Pattern — рисование паттернов</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/icon.svg">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/controls.css">
+  <link rel="stylesheet" href="css/ios.css">
 </head>
 <body>
   <div id="desktop-warning" class="desktop-warning" hidden>
@@ -25,12 +28,32 @@
 
     <header class="top-bar">
       <h1 class="top-bar__title">Pattern</h1>
-      <button type="button" id="toggle-panel" class="icon-btn" aria-label="Панель инструментов">
-        <span class="icon-btn__glyph">✦</span>
-      </button>
     </header>
 
-    <aside id="panel" class="panel panel--open">
+    <nav class="bottom-dock" id="bottom-dock">
+      <button type="button" id="toggle-panel" class="dock-btn dock-btn--primary" aria-label="Инструменты">
+        <span class="dock-btn__icon">✦</span>
+        <span class="dock-btn__label">Инструменты</span>
+      </button>
+      <button type="button" id="dock-undo" class="dock-btn" aria-label="Отменить">
+        <span class="dock-btn__icon">↩</span>
+        <span class="dock-btn__label">Отмена</span>
+      </button>
+      <button type="button" id="dock-share" class="dock-btn" aria-label="Поделиться" hidden>
+        <span class="dock-btn__icon">↑</span>
+        <span class="dock-btn__label">Поделиться</span>
+      </button>
+      <button type="button" id="dock-clear" class="dock-btn dock-btn--danger" aria-label="Очистить">
+        <span class="dock-btn__icon">⌫</span>
+        <span class="dock-btn__label">Очистить</span>
+      </button>
+    </nav>
+
+    <div id="panel-backdrop" class="panel-backdrop" hidden></div>
+
+    <aside id="panel" class="panel">
+      <div class="panel__handle" id="panel-handle" aria-hidden="true"></div>
+
       <section class="panel__section">
         <h2 class="panel__label">Режим</h2>
         <div class="mode-grid" id="mode-grid"></div>
@@ -66,20 +89,14 @@
 
       <section class="panel__section panel__section--ios" id="ios-section" hidden>
         <h2 class="panel__label">Интеграция с iOS</h2>
-        <p class="panel__note">Гироскоп вращает паттерн, «Поделиться» открывает меню iOS.</p>
+        <p class="panel__note">Наклон iPhone вращает паттерн. «Поделиться» сохраняет в Фото.</p>
         <label class="toggle">
           <input type="checkbox" id="motion-toggle">
           <span class="toggle__track"></span>
           <span class="toggle__text">Наклон устройства</span>
         </label>
         <p class="panel__status" id="motion-status" hidden></p>
-        <button type="button" id="share-btn" class="action-btn action-btn--ios">Поделиться рисунком</button>
       </section>
-
-      <div class="panel__actions">
-        <button type="button" id="undo-btn" class="action-btn">Отменить</button>
-        <button type="button" id="clear-btn" class="action-btn action-btn--danger">Очистить</button>
-      </div>
     </aside>
 
     <p class="hint" id="hint">Ведите пальцем по экрану</p>

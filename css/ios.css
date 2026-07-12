@@ -1,0 +1,57 @@
+html.ios body {
+  position: fixed;
+  width: 100%;
+}
+
+.ios .app {
+  width: 100%;
+}
+
+.ios .panel {
+  padding-bottom: calc(1rem + var(--safe-bottom));
+}
+
+.ios .bottom-dock {
+  padding-bottom: calc(0.65rem + var(--safe-bottom));
+}
+
+.ios .canvas {
+  bottom: calc(var(--dock-height) + var(--safe-bottom));
+}
+
+@supports (-webkit-touch-callout: none) {
+  :root {
+    --app-height: -webkit-fill-available;
+  }
+
+  .app {
+    height: var(--app-height);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .bottom-dock {
+    padding-top: 0.35rem;
+    padding-bottom: calc(0.35rem + var(--safe-bottom));
+  }
+
+  .dock-btn {
+    min-height: 2.6rem;
+  }
+
+  .dock-btn__label {
+    display: none;
+  }
+
+  .panel {
+    max-height: min(82dvh, calc(var(--app-height) - 3rem));
+  }
+
+  .top-bar {
+    display: none;
+  }
+
+  .canvas {
+    bottom: calc(3.2rem + var(--safe-bottom));
+  }
+}
