@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тестовый сайт</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="header">
+    <nav class="nav">
+      <a href="#" class="logo">ТестСайт</a>
+      <ul class="nav-links">
+        <li><a href="#home">Главная</a></li>
+        <li><a href="#about">О нас</a></li>
+        <li><a href="#contact">Контакты</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <h1>Добро пожаловать</h1>
+      <p class="hero-text">Это простой тестовый сайт для проверки работы.</p>
+      <button id="greet-btn" class="btn">Нажми меня</button>
+      <p id="greet-message" class="greet-message" hidden></p>
+    </section>
+
+    <section id="about" class="section">
+      <h2>О нас</h2>
+      <p>Здесь можно разместить любую информацию. Сайт состоит из трёх файлов: HTML, CSS и JavaScript.</p>
+    </section>
+
+    <section id="contact" class="section">
+      <h2>Контакты</h2>
+      <form id="contact-form" class="contact-form">
+        <label for="name">Имя</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="message">Сообщение</label>
+        <textarea id="message" name="message" rows="4" required></textarea>
+
+        <button type="submit" class="btn">Отправить</button>
+      </form>
+      <p id="form-status" class="form-status" hidden></p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; <span id="year"></span> Тестовый сайт</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
