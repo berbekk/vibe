@@ -1,7 +1,15 @@
+import { isIos } from './ios-detect.js';
 import { MOBILE_MAX_WIDTH } from './config.js';
 
 export function isMobileDevice() {
-  return window.matchMedia(`(max-width: ${MOBILE_MAX_WIDTH}px)`).matches;
+  if (isIos()) {
+    return true;
+  }
+
+  const hasTouch = navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
+  const narrow = window.matchMedia(`(max-width: ${MOBILE_MAX_WIDTH}px)`).matches;
+
+  return narrow && hasTouch;
 }
 
 export function getCanvasPoint(canvas, clientX, clientY) {

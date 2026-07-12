@@ -6,6 +6,7 @@ import { Controls } from './controls.js';
 import { IosMotion } from './ios-motion.js';
 import { shareCanvasImage } from './ios-share.js';
 import { isStandalonePwa } from './ios-detect.js';
+import { bindVisualViewport } from './viewport.js';
 
 function showMobileApp() {
   document.getElementById('desktop-warning').hidden = true;
@@ -41,7 +42,7 @@ function initApp() {
     if (event.type === 'share') {
       const result = await shareCanvasImage(canvas);
       if (!result.ok) {
-        controls.setMotionStatus('Поделиться недоступно в этом браузере');
+        controls.setMotionStatus('Поделиться недоступно');
       }
       return;
     }
@@ -74,17 +75,15 @@ function initApp() {
 
   drawing.onFirstStroke = () => {
     hint.classList.add('hint--hidden');
+    controls.setPanelOpen(false);
   };
 
   drawing.bind();
 
-  const resize = () => engine.resize();
-  resize();
-  window.addEventListener('resize', resize);
-  window.addEventListener('orientationchange', resize);
+  bindVisualViewport(() => engine.resize());
 
   if (isStandalonePwa()) {
-    hint.textContent = 'PWA-режим: добавлено на экран «Домой»';
+    hint.textContent = 'Рисуйте пальцем по экрану';
   }
 }
 
