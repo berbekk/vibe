@@ -1,6 +1,6 @@
-import { CATEGORIES, PRIORITY_LABELS, getAllItems } from './data.js';
-import { loadState, saveState, clearState } from './storage.js';
-import { computeProgress, computeCategoryProgress } from './progress.js';
+import { CATEGORIES, PRIORITY_LABELS, getAllItems } from './data.js?v=2';
+import { loadState, saveState, clearState } from './storage.js?v=2';
+import { computeProgress, computeCategoryProgress } from './progress.js?v=2';
 
 const FILTERS = [
   { id: 'all', label: 'Все' },
