@@ -2,102 +2,74 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="theme-color" content="#000000">
-  <title>Pattern</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icons/icon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Чеклист выбора квартиры в Москве на долгий срок: район, дом, состояние, деньги, договор и быт.">
+  <meta name="theme-color" content="#e8eef5">
+  <title>НАДОЛГО — чеклист квартиры в Москве</title>
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/controls.css">
-  <link rel="stylesheet" href="css/ios.css">
+  <link rel="stylesheet" href="css/checklist.css">
 </head>
 <body>
-  <div id="desktop-warning" class="desktop-warning" hidden>
-    <div class="desktop-warning__card">
-      <h1>Только для iPhone</h1>
-      <p>Откройте сайт в Safari на iPhone.</p>
-    </div>
+  <div class="shell">
+    <header class="topbar" id="topbar">
+      <a class="brand" href="#">
+        <span class="brand__mark">Надолго</span>
+        <span class="brand__sub">Москва · аренда</span>
+      </a>
+      <div class="topbar__actions">
+        <button type="button" class="btn btn--danger" id="reset-btn" aria-label="Сбросить прогресс">
+          <span class="btn--label">Сбросить</span>
+          <span aria-hidden="true">↺</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 class="hero__title" id="hero-title">Надолго</h1>
+      <p class="hero__lead">
+        Чеклист, чтобы при выборе квартиры в Москве на годы не упустить шум, договор, отопление и то, что бесит только после въезда.
+      </p>
+      <div class="hero__cta">
+        <button type="button" class="btn btn--primary" id="scroll-checklist">К чеклисту</button>
+      </div>
+    </section>
+
+    <section class="progress-panel" aria-live="polite">
+      <div class="progress-panel__row">
+        <span class="progress-panel__label">Готовность к выбору</span>
+        <strong class="progress-panel__value" id="progress-value">0%</strong>
+      </div>
+      <div class="progress-bar" aria-hidden="true">
+        <div class="progress-bar__fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-panel__meta" id="progress-meta"></div>
+    </section>
+
+    <div id="checklist-anchor"></div>
+
+    <nav class="filters" id="filters" aria-label="Фильтры чеклиста"></nav>
+
+    <p class="legend">
+      <span><i class="critical"></i> Критично — лучше не игнорировать</span>
+      <span><i class="important"></i> Важно — сильно влияет на комфорт</span>
+      <span><i class="nice"></i> Полезно — на долгом сроке приятно</span>
+    </p>
+
+    <main class="checklist" id="checklist" aria-label="Чеклист осмотра квартиры"></main>
+
+    <footer class="footer">
+      <p>
+        Отметки сохраняются в этом браузере. Берите чеклист на просмотр — и проверьте квартиру ещё раз вечером.
+      </p>
+    </footer>
   </div>
 
-  <div id="app" class="app" hidden>
-    <canvas id="canvas" class="canvas"></canvas>
-
-    <div id="chrome" class="chrome">
-      <header class="toolbar">
-        <div class="toolbar__group">
-          <button type="button" id="btn-brush" class="tool-btn" data-popover="popover-brush" aria-label="Кисть">
-            <img src="icons/tab-brush.svg" alt="" width="22" height="22">
-          </button>
-          <button type="button" id="btn-mode" class="tool-btn" data-popover="popover-mode" aria-label="Режим">
-            <img src="icons/tab-mode.svg" alt="" width="22" height="22">
-          </button>
-          <button type="button" id="btn-color" class="tool-btn" data-popover="popover-color" aria-label="Цвет">
-            <img src="icons/tab-color.svg" alt="" width="22" height="22">
-          </button>
-          <button type="button" id="btn-symmetry" class="tool-btn" data-popover="popover-symmetry" aria-label="Симметрия">
-            <img src="icons/tab-symmetry.svg" alt="" width="22" height="22">
-          </button>
-        </div>
-        <div class="toolbar__group">
-          <button type="button" id="dock-undo" class="tool-btn" aria-label="Отменить">
-            <img src="icons/tab-undo.svg" alt="" width="22" height="22">
-          </button>
-          <button type="button" id="dock-share" class="tool-btn" aria-label="Поделиться" hidden>
-            <img src="icons/tab-share.svg" alt="" width="22" height="22">
-          </button>
-          <button type="button" id="dock-clear" class="tool-btn" aria-label="Очистить">
-            <img src="icons/tab-trash.svg" alt="" width="22" height="22">
-          </button>
-          <button type="button" id="btn-settings" class="tool-btn" data-popover="popover-settings" aria-label="Настройки" hidden>
-            <img src="icons/tab-settings.svg" alt="" width="22" height="22">
-          </button>
-        </div>
-      </header>
-
-      <div id="popover-brush" class="popover" hidden>
-        <div class="popover__row">
-          <span class="popover__label">Размер</span>
-          <span class="popover__value" id="brush-size-value">8</span>
-        </div>
-        <input type="range" id="brush-size" class="slider" min="2" max="24" value="8">
-        <div class="popover__toggles">
-          <label class="popover__toggle">
-            <span>Свечение</span>
-            <input type="checkbox" id="glow-toggle" class="switch" checked>
-          </label>
-          <label class="popover__toggle">
-            <span>Радуга</span>
-            <input type="checkbox" id="rainbow-toggle" class="switch" checked>
-          </label>
-        </div>
-      </div>
-
-      <div id="popover-mode" class="popover" hidden>
-        <div class="segmented" id="mode-grid"></div>
-      </div>
-
-      <div id="popover-color" class="popover" hidden>
-        <div class="palette" id="palette"></div>
-      </div>
-
-      <div id="popover-symmetry" class="popover" hidden>
-        <div class="chip-row" id="symmetry-row"></div>
-      </div>
-
-      <div id="popover-settings" class="popover" hidden>
-        <label class="popover__toggle">
-          <span>Наклон устройства</span>
-          <input type="checkbox" id="motion-toggle" class="switch">
-        </label>
-        <p class="popover__note" id="motion-status" hidden></p>
-      </div>
-    </div>
-  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script type="module" src="js/app.js"></script>
 </body>

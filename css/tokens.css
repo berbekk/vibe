@@ -1,25 +1,39 @@
 :root {
-  --color-bg: #000000;
-  --color-bg-elevated: #1c1c1e;
-  --color-bg-grouped: #2c2c2e;
-  --color-fill: rgba(120, 120, 128, 0.36);
-  --color-fill-secondary: rgba(120, 120, 128, 0.24);
-  --color-separator: rgba(84, 84, 88, 0.65);
-  --color-label: #ffffff;
-  --color-label-secondary: rgba(235, 235, 245, 0.6);
-  --color-label-tertiary: rgba(235, 235, 245, 0.3);
-  --color-tint: #0a84ff;
-  --color-green: #30d158;
-  --color-orange: #ff9f0a;
-  --radius-group: 0.75rem;
-  --font-body: 1.0625rem;
-  --font-footnote: 0.8125rem;
-  --font-caption: 0.75rem;
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-right: env(safe-area-inset-right, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-left: env(safe-area-inset-left, 0px);
-  --toolbar-offset: calc(0.75rem + var(--safe-top));
-  --app-height: 100dvh;
-  --viewport-offset-top: 0px;
+  --font-display: "Syne", "Segoe UI", sans-serif;
+  --font-body: "Manrope", "Segoe UI", sans-serif;
+
+  --bg-deep: #e8eef5;
+  --bg-mid: #f4f7fb;
+  --bg-elevated: rgba(255, 255, 255, 0.72);
+  --bg-solid: #ffffff;
+  --ink: #122033;
+  --ink-soft: #3d4f66;
+  --ink-muted: #6b7c90;
+  --line: rgba(18, 32, 51, 0.1);
+  --line-strong: rgba(18, 32, 51, 0.18);
+
+  --accent: #0f766e;
+  --accent-deep: #0b5a54;
+  --accent-soft: rgba(15, 118, 110, 0.12);
+  --accent-glow: rgba(15, 118, 110, 0.22);
+
+  --critical: #b45309;
+  --critical-soft: rgba(180, 83, 9, 0.12);
+  --important: #0369a1;
+  --important-soft: rgba(3, 105, 161, 0.12);
+  --nice: #4b5563;
+  --nice-soft: rgba(75, 85, 99, 0.1);
+
+  --shadow-soft: 0 18px 50px rgba(18, 32, 51, 0.08);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --header-h: 64px;
+  --space: clamp(1rem, 3vw, 2rem);
+  --content: 720px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-fast: 180ms;
+  --motion: 320ms;
 }
