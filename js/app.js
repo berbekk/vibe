@@ -1,6 +1,6 @@
-import { CATEGORIES, PRIORITY_LABELS, getAllItems } from './data.js?v=4';
-import { loadState, saveState, clearState } from './storage.js?v=4';
-import { computeProgress, computeCategoryProgress } from './progress.js?v=4';
+import { CATEGORIES, PRIORITY_LABELS, getAllItems } from './data.js?v=5';
+import { loadState, saveState, clearState } from './storage.js?v=5';
+import { computeProgress, computeCategoryProgress } from './progress.js?v=5';
 
 const FILTERS = [
   { id: 'all', label: 'Все' },
@@ -11,12 +11,13 @@ const FILTERS = [
 
 const state = {
   checked: {},
-  openCategories: {},
+  activeTab: CATEGORIES[0].id,
   filter: 'all',
 };
 
 const els = {
   topbar: document.querySelector('#topbar'),
+  sectionTabs: document.querySelector('#section-tabs'),
   checklist: document.querySelector('#checklist'),
   filters: document.querySelector('#filters'),
   progressFill: document.querySelector('#progress-fill'),
@@ -32,19 +33,14 @@ function initState() {
   const saved = loadState();
   state.checked = { ...saved.checked };
 
-  if (saved.openCategories) {
-    state.openCategories = { ...saved.openCategories };
-  } else {
-    state.openCategories = Object.fromEntries(
-      CATEGORIES.map((category, index) => [category.id, index === 0])
-    );
-  }
+  const savedTabExists = CATEGORIES.some((category) => category.id === saved.activeTab);
+  state.activeTab = savedTabExists ? saved.activeTab : CATEGORIES[0].id;
 }
 
 function persist() {
   saveState({
     checked: state.checked,
-    openCategories: state.openCategories,
+    activeTab: state.activeTab,
   });
 }
 
@@ -55,6 +51,10 @@ function showToast(message) {
   toastTimer = window.setTimeout(() => {
     els.toast.classList.remove('is-visible');
   }, 2200);
+}
+
+function getActiveCategory() {
+  return CATEGORIES.find((category) => category.id === state.activeTab) || CATEGORIES[0];
 }
 
 function matchesFilter(item) {
@@ -76,7 +76,7 @@ function updateProgress() {
   els.progressFill.style.width = `${progress.percent}%`;
   els.progressValue.textContent = `${progress.percent}%`;
   els.progressMeta.innerHTML = `
-    <span>${progress.done} из ${progress.total} пунктов</span>
+    <span>${progress.done} из ${progress.total}</span>
     <span>Критичных: ${progress.criticalDone}/${progress.criticalTotal}</span>
     <span>Осталось: ${progress.remaining}</span>
   `;
@@ -94,6 +94,25 @@ function renderFilters() {
       </button>
     `
   ).join('');
+}
+
+function renderSectionTabs() {
+  els.sectionTabs.innerHTML = CATEGORIES.map((category) => {
+    const progress = computeCategoryProgress(category, state.checked);
+    const isActive = category.id === state.activeTab;
+
+    return `
+      <button
+        type="button"
+        class="section-tab${isActive ? ' is-active' : ''}"
+        data-tab="${category.id}"
+        aria-selected="${isActive}"
+      >
+        <span class="section-tab__label">${escapeHtml(category.shortTitle)}</span>
+        <span class="section-tab__count">${progress.done}/${progress.total}</span>
+      </button>
+    `;
+  }).join('');
 }
 
 function escapeHtml(value) {
@@ -153,66 +172,59 @@ function itemTemplate(item) {
 }
 
 function renderChecklist() {
-  const fragments = CATEGORIES.map((category, index) => {
-    const visibleItems = category.items.filter(matchesFilter);
-    if (visibleItems.length === 0) {
-      return '';
-    }
+  const category = getActiveCategory();
+  const visibleItems = category.items.filter(matchesFilter);
+  const progress = computeCategoryProgress(category, state.checked);
 
-    const catProgress = computeCategoryProgress(category, state.checked);
-    const isOpen = Boolean(state.openCategories[category.id]);
-
-    return `
-      <section
-        class="category${isOpen ? ' is-open' : ''}"
-        data-category="${category.id}"
-        style="animation-delay: ${120 + index * 40}ms"
-      >
-        <button type="button" class="category__header" data-toggle-category="${category.id}" aria-expanded="${isOpen}">
-          <div class="category__title-wrap">
-            <h2 class="category__title">${category.title}</h2>
-            <p class="category__hint">${category.hint}</p>
+  if (visibleItems.length === 0) {
+    els.checklist.innerHTML = `
+      <section class="panel">
+        <header class="panel__header">
+          <div>
+            <h2 class="panel__title">${escapeHtml(category.title)}</h2>
+            <p class="panel__hint">${escapeHtml(category.hint)}</p>
           </div>
-          <div class="category__stats">
-            <span>${catProgress.done}/${catProgress.total}</span>
-            <div class="category__mini" aria-hidden="true">
-              <div class="category__mini-fill" style="width: ${catProgress.percent}%"></div>
-            </div>
-            <svg class="category__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path d="M5 7.5 10 12.5 15 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </button>
-        <div class="category__body">
-          ${visibleItems.map(itemTemplate).join('')}
+          <span class="panel__count">${progress.done}/${progress.total}</span>
+        </header>
+        <div class="empty-state">
+          <h3>По этому фильтру пусто</h3>
+          <p>Смените фильтр или вкладку, чтобы снова увидеть пункты.</p>
         </div>
       </section>
-    `;
-  }).join('');
-
-  if (!fragments.trim()) {
-    els.checklist.innerHTML = `
-      <div class="empty-state">
-        <h2>По этому фильтру пусто</h2>
-        <p>Смените фильтр или снимите отметки, чтобы снова увидеть пункты.</p>
-      </div>
     `;
     return;
   }
 
-  els.checklist.innerHTML = fragments;
+  els.checklist.innerHTML = `
+    <section class="panel">
+      <header class="panel__header">
+        <div>
+          <h2 class="panel__title">${escapeHtml(category.title)}</h2>
+          <p class="panel__hint">${escapeHtml(category.hint)}</p>
+        </div>
+        <span class="panel__count">${progress.done}/${progress.total}</span>
+      </header>
+      <div class="panel__list">
+        ${visibleItems.map(itemTemplate).join('')}
+      </div>
+    </section>
+  `;
 }
 
 function render() {
+  renderSectionTabs();
   renderFilters();
   updateProgress();
   renderChecklist();
 }
 
-function toggleCategory(categoryId) {
-  state.openCategories[categoryId] = !state.openCategories[categoryId];
+function setActiveTab(tabId) {
+  if (!CATEGORIES.some((category) => category.id === tabId)) {
+    return;
+  }
+  state.activeTab = tabId;
   persist();
-  renderChecklist();
+  render();
 }
 
 function setChecked(itemId, value) {
@@ -223,14 +235,19 @@ function setChecked(itemId, value) {
   }
   persist();
   updateProgress();
+  renderSectionTabs();
 
   const itemEl = els.checklist.querySelector(`[data-item-id="${itemId}"]`);
   if (itemEl) {
     itemEl.classList.toggle('is-checked', value);
   }
 
-  // Refresh category counters without collapsing tip states awkwardly
-  renderChecklist();
+  const category = getActiveCategory();
+  const progress = computeCategoryProgress(category, state.checked);
+  const countEl = els.checklist.querySelector('.panel__count');
+  if (countEl) {
+    countEl.textContent = `${progress.done}/${progress.total}`;
+  }
 }
 
 function resetProgress() {
@@ -253,29 +270,31 @@ function resetProgress() {
 }
 
 function bindEvents() {
+  els.sectionTabs.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-tab]');
+    if (!button) return;
+    setActiveTab(button.dataset.tab);
+  });
+
   els.filters.addEventListener('click', (event) => {
     const button = event.target.closest('[data-filter]');
     if (!button) return;
     state.filter = button.dataset.filter;
-    render();
+    renderFilters();
+    renderChecklist();
   });
 
   els.checklist.addEventListener('click', (event) => {
-    const categoryBtn = event.target.closest('[data-toggle-category]');
-    if (categoryBtn) {
-      toggleCategory(categoryBtn.dataset.toggleCategory);
-      return;
-    }
-
     const tipBtn = event.target.closest('[data-tip-toggle]');
-    if (tipBtn) {
-      const tip = document.getElementById(tipBtn.dataset.tipToggle);
-      if (!tip) return;
-      const willOpen = tip.hasAttribute('hidden');
-      tip.toggleAttribute('hidden', !willOpen);
-      tipBtn.setAttribute('aria-expanded', String(willOpen));
-      tipBtn.textContent = willOpen ? 'Скрыть подсказку' : 'Зачем это важно';
-    }
+    if (!tipBtn) return;
+
+    const tip = document.getElementById(tipBtn.dataset.tipToggle);
+    if (!tip) return;
+
+    const willOpen = tip.hasAttribute('hidden');
+    tip.toggleAttribute('hidden', !willOpen);
+    tipBtn.setAttribute('aria-expanded', String(willOpen));
+    tipBtn.textContent = willOpen ? 'Скрыть подсказку' : 'Зачем это важно';
   });
 
   els.checklist.addEventListener('change', (event) => {
@@ -299,8 +318,6 @@ function bootstrap() {
   initState();
   bindEvents();
   render();
-
-  // Prefetch count for accessibility live region updates
   getAllItems();
 }
 

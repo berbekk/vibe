@@ -10,21 +10,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/tokens.css?v=4">
-  <link rel="stylesheet" href="css/styles.css?v=4">
-  <link rel="stylesheet" href="css/checklist.css?v=4">
+  <link rel="stylesheet" href="css/tokens.css?v=5">
+  <link rel="stylesheet" href="css/styles.css?v=5">
+  <link rel="stylesheet" href="css/checklist.css?v=5">
 </head>
 <body>
   <div class="shell">
     <header class="topbar" id="topbar">
-      <a class="brand brand--compact" href="#" aria-label="Надолго">
+      <a class="brand" href="#" aria-label="Надолго — наверх">
         <span class="brand__mark">Надолго</span>
       </a>
-      <div class="topbar__actions">
-        <button type="button" class="btn btn--ghost" id="reset-btn" aria-label="Сбросить прогресс">
-          Сбросить
-        </button>
-      </div>
+      <button type="button" class="topbar__reset" id="reset-btn">
+        Сбросить
+      </button>
     </header>
 
     <section class="hero" aria-labelledby="hero-title">
@@ -45,6 +43,8 @@
       </div>
       <div class="progress-panel__meta" id="progress-meta"></div>
     </section>
+
+    <nav class="section-tabs" id="section-tabs" aria-label="Разделы чеклиста"></nav>
 
     <div id="checklist-anchor"></div>
 
@@ -67,6 +67,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script type="module" src="js/app.js?v=4"></script>
+  <script type="module" src="js/app.js?v=5"></script>
 </body>
 </html>

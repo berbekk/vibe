@@ -1,4 +1,4 @@
-import { getAllItems } from './data.js?v=4';
+import { getAllItems } from './data.js?v=5';
 
 export function computeProgress(checkedMap) {
   const items = getAllItems();

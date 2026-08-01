@@ -64,11 +64,11 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  min-height: 52px;
-  padding: 0.55rem 0;
+  gap: 0.75rem;
+  height: 48px;
+  padding: 0;
   backdrop-filter: blur(16px);
-  background: rgba(244, 247, 251, 0.78);
+  background: rgba(244, 247, 251, 0.88);
   border-bottom: 1px solid transparent;
   transition:
     border-color var(--motion) var(--ease-out),
@@ -77,69 +77,49 @@ a {
 
 .topbar.is-scrolled {
   border-bottom-color: var(--line);
-  background: rgba(244, 247, 251, 0.92);
+  background: rgba(244, 247, 251, 0.96);
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
   text-decoration: none;
 }
 
-.brand--compact .brand__mark {
+.brand__mark {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   line-height: 1;
-  opacity: 0;
-  transform: translateY(4px);
-  transition:
-    opacity var(--motion) var(--ease-out),
-    transform var(--motion) var(--ease-out);
+  color: var(--ink);
 }
 
-.topbar.is-scrolled .brand--compact .brand__mark {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.topbar__actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-left: auto;
-}
-
-.btn {
+.topbar__reset {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  min-height: 36px;
-  padding: 0.45rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  transition:
-    transform var(--motion-fast) var(--ease-out),
-    background var(--motion-fast) var(--ease-out),
-    color var(--motion-fast) var(--ease-out),
-    border-color var(--motion-fast) var(--ease-out);
-}
-
-.btn:active {
-  transform: scale(0.98);
-}
-
-.btn--ghost {
+  height: 32px;
+  padding: 0 0.7rem;
+  border-radius: 8px;
   color: var(--ink-soft);
-  border-color: var(--line);
-  background: rgba(255, 255, 255, 0.45);
-  font-size: 0.88rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background var(--motion-fast) var(--ease-out);
 }
 
-.btn--ghost:hover {
+.topbar__reset:hover {
   color: var(--ink);
-  background: var(--bg-solid);
+  background: rgba(18, 32, 51, 0.06);
+}
+
+.topbar__reset:active {
+  background: rgba(18, 32, 51, 0.1);
 }
 
 .hero {
@@ -226,6 +206,56 @@ a {
   border-radius: inherit;
   background: linear-gradient(90deg, var(--accent), #0ea5a0);
   transition: width var(--motion) var(--ease-out);
+}
+
+.section-tabs {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding: 0.15rem 0 0.9rem;
+  margin: 0;
+  scrollbar-width: none;
+  border-top: 1px solid var(--line);
+  animation: rise 720ms var(--ease-out) both;
+  animation-delay: 70ms;
+}
+
+.section-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.section-tab {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 36px;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  white-space: nowrap;
+  transition:
+    background var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+
+.section-tab__count {
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+}
+
+.section-tab.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.section-tab.is-active .section-tab__count {
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .filters {
@@ -373,10 +403,5 @@ a {
   *::after {
     animation: none !important;
     transition: none !important;
-  }
-
-  .brand--compact .brand__mark {
-    opacity: 1;
-    transform: none;
   }
 }

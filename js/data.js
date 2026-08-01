@@ -14,6 +14,7 @@ export const CATEGORIES = [
   {
     id: 'location',
     title: 'Локация и район',
+    shortTitle: 'Локация',
     hint: 'Проверьте до просмотра и по дороге к дому',
     items: [
       {
@@ -69,6 +70,7 @@ export const CATEGORIES = [
   {
     id: 'building',
     title: 'Дом и подъезд',
+    shortTitle: 'Дом',
     hint: 'Дом задаёт половину комфорта на годы',
     items: [
       {
@@ -112,6 +114,7 @@ export const CATEGORIES = [
   {
     id: 'apartment',
     title: 'Состояние квартиры',
+    shortTitle: 'Квартира',
     hint: 'Проверяйте руками, а не по фото',
     items: [
       {
@@ -203,6 +206,7 @@ export const CATEGORIES = [
   {
     id: 'money',
     title: 'Деньги и платежи',
+    shortTitle: 'Деньги',
     hint: 'Считайте полную месячную стоимость',
     items: [
       {
@@ -252,6 +256,7 @@ export const CATEGORIES = [
   {
     id: 'legal',
     title: 'Документы и договор',
+    shortTitle: 'Документы',
     hint: 'Без этого долгий срок превращается в риск',
     items: [
       {
@@ -314,6 +319,7 @@ export const CATEGORIES = [
   {
     id: 'lifestyle',
     title: 'Жизнь на годы',
+    shortTitle: 'Быт',
     hint: 'То, что незаметно на первом просмотре',
     items: [
       {
@@ -363,6 +369,7 @@ export const CATEGORIES = [
   {
     id: 'movein',
     title: 'Перед ключами',
+    shortTitle: 'Ключи',
     hint: 'Финальный контроль в день сделки',
     items: [
       {
