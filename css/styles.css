@@ -14,10 +14,9 @@ body {
   font-family: var(--font-body);
   color: var(--ink);
   background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(15, 118, 110, 0.16), transparent 55%),
-    radial-gradient(900px 500px at 90% 0%, rgba(3, 105, 161, 0.12), transparent 50%),
-    linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 38%, #eef3f8 100%);
-  background-attachment: fixed;
+    radial-gradient(900px 480px at 0% -5%, rgba(15, 118, 110, 0.18), transparent 55%),
+    radial-gradient(700px 420px at 100% 0%, rgba(3, 105, 161, 0.1), transparent 48%),
+    linear-gradient(180deg, #dfe8f2 0%, var(--bg-mid) 32%, #eef3f8 100%);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -27,17 +26,12 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.35;
+  opacity: 0.28;
   background-image:
-    linear-gradient(rgba(18, 32, 51, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(18, 32, 51, 0.03) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 70%);
-}
-
-img {
-  display: block;
-  max-width: 100%;
+    linear-gradient(rgba(18, 32, 51, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18, 32, 51, 0.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.5), transparent 55%);
 }
 
 button,
@@ -60,7 +54,7 @@ a {
   position: relative;
   width: min(100% - 2 * var(--space), var(--content));
   margin: 0 auto;
-  padding: 0 0 5rem;
+  padding: 0 0 4rem;
 }
 
 .topbar {
@@ -71,44 +65,49 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  min-height: var(--header-h);
-  padding: 0.75rem 0;
-  backdrop-filter: blur(14px);
-  background: linear-gradient(180deg, rgba(244, 247, 251, 0.92), rgba(244, 247, 251, 0.72));
+  min-height: 52px;
+  padding: 0.55rem 0;
+  backdrop-filter: blur(16px);
+  background: rgba(244, 247, 251, 0.78);
   border-bottom: 1px solid transparent;
-  transition: border-color var(--motion) var(--ease-out);
+  transition:
+    border-color var(--motion) var(--ease-out),
+    background var(--motion) var(--ease-out);
 }
 
 .topbar.is-scrolled {
   border-bottom-color: var(--line);
+  background: rgba(244, 247, 251, 0.92);
 }
 
 .brand {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
   text-decoration: none;
 }
 
-.brand__mark {
+.brand--compact .brand__mark {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.15rem;
-  letter-spacing: 0.04em;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   line-height: 1;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity var(--motion) var(--ease-out),
+    transform var(--motion) var(--ease-out);
 }
 
-.brand__sub {
-  font-size: 0.72rem;
-  color: var(--ink-muted);
-  letter-spacing: 0.02em;
+.topbar.is-scrolled .brand--compact .brand__mark {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .topbar__actions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-left: auto;
 }
 
 .btn {
@@ -116,10 +115,10 @@ a {
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  min-height: 40px;
-  padding: 0.55rem 0.95rem;
+  min-height: 36px;
+  padding: 0.45rem 0.85rem;
   border-radius: 999px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid transparent;
   transition:
     transform var(--motion-fast) var(--ease-out),
     background var(--motion-fast) var(--ease-out),
@@ -127,86 +126,61 @@ a {
     border-color var(--motion-fast) var(--ease-out);
 }
 
-.btn:hover {
-  transform: translateY(-1px);
-}
-
 .btn:active {
-  transform: translateY(0);
+  transform: scale(0.98);
 }
 
 .btn--ghost {
-  background: rgba(255, 255, 255, 0.55);
   color: var(--ink-soft);
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.45);
+  font-size: 0.88rem;
 }
 
 .btn--ghost:hover {
-  background: var(--bg-solid);
   color: var(--ink);
-}
-
-.btn--primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-
-.btn--primary:hover {
-  background: var(--accent-deep);
-  border-color: var(--accent-deep);
-}
-
-.btn--danger {
-  color: #9a3412;
-  border-color: rgba(154, 52, 18, 0.25);
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--bg-solid);
 }
 
 .hero {
   position: relative;
-  min-height: min(72vh, 560px);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: clamp(2rem, 6vw, 4rem) 0 clamp(2rem, 5vw, 3.25rem);
-  animation: rise 700ms var(--ease-out) both;
+  padding: 0.85rem 0 1.25rem;
+  animation: rise 600ms var(--ease-out) both;
+}
+
+.hero__eyebrow {
+  margin: 0 0 0.55rem;
+  color: var(--accent-deep);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .hero__title {
   margin: 0;
-  max-width: 10ch;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(3rem, 11vw, 5rem);
-  line-height: 0.95;
-  letter-spacing: -0.04em;
+  font-size: clamp(2.75rem, 12vw, 4.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
 }
 
 .hero__lead {
-  margin: 1rem 0 0;
-  max-width: 34ch;
+  margin: 0.85rem 0 0;
+  max-width: 28ch;
   color: var(--ink-soft);
-  font-size: 1.05rem;
-}
-
-.hero__cta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
+  font-size: 1.02rem;
+  line-height: 1.45;
 }
 
 .progress-panel {
   position: relative;
-  margin: 0.5rem 0 1.5rem;
-  padding: 1.1rem 1.2rem 1.2rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  background: var(--bg-elevated);
-  box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(10px);
-  animation: rise 800ms var(--ease-out) both;
-  animation-delay: 80ms;
+  margin: 0 0 1rem;
+  padding: 0.85rem 0 0.35rem;
+  border-top: 1px solid var(--line);
+  animation: rise 700ms var(--ease-out) both;
+  animation-delay: 60ms;
 }
 
 .progress-panel__row {
@@ -214,33 +188,33 @@ a {
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.55rem;
 }
 
 .progress-panel__label {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--ink-muted);
 }
 
 .progress-panel__value {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   letter-spacing: -0.02em;
 }
 
 .progress-panel__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem 1rem;
-  margin-top: 0.85rem;
-  font-size: 0.82rem;
+  gap: 0.35rem 0.85rem;
+  margin-top: 0.55rem;
+  font-size: 0.78rem;
   color: var(--ink-soft);
 }
 
 .progress-bar {
   position: relative;
-  height: 10px;
+  height: 7px;
   border-radius: 999px;
   background: rgba(18, 32, 51, 0.08);
   overflow: hidden;
@@ -256,13 +230,13 @@ a {
 
 .filters {
   display: flex;
-  gap: 0.45rem;
+  gap: 0.4rem;
   overflow-x: auto;
-  padding: 0.15rem 0 1rem;
-  margin-bottom: 0.25rem;
+  padding: 0.1rem 0 0.85rem;
+  margin: 0;
   scrollbar-width: none;
-  animation: rise 850ms var(--ease-out) both;
-  animation-delay: 120ms;
+  animation: rise 750ms var(--ease-out) both;
+  animation-delay: 90ms;
 }
 
 .filters::-webkit-scrollbar {
@@ -271,13 +245,13 @@ a {
 
 .filter-chip {
   flex: 0 0 auto;
-  min-height: 36px;
-  padding: 0.4rem 0.85rem;
+  min-height: 34px;
+  padding: 0.35rem 0.8rem;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.55);
   color: var(--ink-soft);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   transition:
     background var(--motion-fast) var(--ease-out),
     color var(--motion-fast) var(--ease-out),
@@ -293,23 +267,23 @@ a {
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.65rem 1rem;
-  margin: 0 0 1.25rem;
-  font-size: 0.8rem;
+  gap: 0.55rem 0.9rem;
+  margin: 0 0 1rem;
+  font-size: 0.76rem;
   color: var(--ink-muted);
-  animation: rise 900ms var(--ease-out) both;
-  animation-delay: 160ms;
+  animation: rise 800ms var(--ease-out) both;
+  animation-delay: 110ms;
 }
 
 .legend span {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.3rem;
 }
 
 .legend i {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
 }
 
@@ -326,16 +300,16 @@ a {
 }
 
 .footer {
-  margin-top: 2.5rem;
-  padding-top: 1.25rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
   border-top: 1px solid var(--line);
   color: var(--ink-muted);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
 }
 
 .footer p {
   margin: 0;
-  max-width: 42ch;
+  max-width: 40ch;
 }
 
 .toast {
@@ -344,11 +318,11 @@ a {
   bottom: 1.25rem;
   transform: translateX(-50%) translateY(120%);
   z-index: 40;
-  padding: 0.75rem 1rem;
+  padding: 0.7rem 0.95rem;
   border-radius: 999px;
   background: var(--ink);
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   box-shadow: var(--shadow-soft);
   opacity: 0;
   transition:
@@ -365,7 +339,7 @@ a {
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -373,17 +347,19 @@ a {
   }
 }
 
-@media (max-width: 560px) {
-  .brand__sub {
-    display: none;
+@media (min-width: 720px) {
+  .hero {
+    padding: 1.5rem 0 1.75rem;
   }
 
-  .btn--label {
-    display: none;
+  .hero__lead {
+    max-width: 34ch;
+    font-size: 1.08rem;
   }
 
-  .progress-panel__value {
-    font-size: 1.2rem;
+  .progress-panel {
+    margin-bottom: 1.25rem;
+    padding-top: 1.1rem;
   }
 }
 
@@ -397,5 +373,10 @@ a {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+
+  .brand--compact .brand__mark {
+    opacity: 1;
+    transform: none;
   }
 }

@@ -1,6 +1,6 @@
-import { CATEGORIES, PRIORITY_LABELS, getAllItems } from './data.js?v=3';
-import { loadState, saveState, clearState } from './storage.js?v=3';
-import { computeProgress, computeCategoryProgress } from './progress.js?v=3';
+import { CATEGORIES, PRIORITY_LABELS, getAllItems } from './data.js?v=4';
+import { loadState, saveState, clearState } from './storage.js?v=4';
+import { computeProgress, computeCategoryProgress } from './progress.js?v=4';
 
 const FILTERS = [
   { id: 'all', label: 'Все' },
@@ -23,7 +23,6 @@ const els = {
   progressValue: document.querySelector('#progress-value'),
   progressMeta: document.querySelector('#progress-meta'),
   resetBtn: document.querySelector('#reset-btn'),
-  scrollBtn: document.querySelector('#scroll-checklist'),
   toast: document.querySelector('#toast'),
 };
 
@@ -286,10 +285,6 @@ function bindEvents() {
   });
 
   els.resetBtn.addEventListener('click', resetProgress);
-
-  els.scrollBtn.addEventListener('click', () => {
-    document.querySelector('#checklist-anchor')?.scrollIntoView({ behavior: 'smooth' });
-  });
 
   window.addEventListener(
     'scroll',

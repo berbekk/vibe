@@ -10,38 +10,34 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/tokens.css?v=3">
-  <link rel="stylesheet" href="css/styles.css?v=3">
-  <link rel="stylesheet" href="css/checklist.css?v=3">
+  <link rel="stylesheet" href="css/tokens.css?v=4">
+  <link rel="stylesheet" href="css/styles.css?v=4">
+  <link rel="stylesheet" href="css/checklist.css?v=4">
 </head>
 <body>
   <div class="shell">
     <header class="topbar" id="topbar">
-      <a class="brand" href="#">
+      <a class="brand brand--compact" href="#" aria-label="Надолго">
         <span class="brand__mark">Надолго</span>
-        <span class="brand__sub">Москва · аренда</span>
       </a>
       <div class="topbar__actions">
-        <button type="button" class="btn btn--danger" id="reset-btn" aria-label="Сбросить прогресс">
-          <span class="btn--label">Сбросить</span>
-          <span aria-hidden="true">↺</span>
+        <button type="button" class="btn btn--ghost" id="reset-btn" aria-label="Сбросить прогресс">
+          Сбросить
         </button>
       </div>
     </header>
 
     <section class="hero" aria-labelledby="hero-title">
+      <p class="hero__eyebrow">Москва · долгосрочная аренда</p>
       <h1 class="hero__title" id="hero-title">Надолго</h1>
       <p class="hero__lead">
-        Чеклист, чтобы при выборе квартиры в Москве на годы не упустить шум, договор, отопление и то, что бесит только после въезда.
+        Чеклист выбора квартиры: шум, договор, отопление и то, что бесит только после въезда.
       </p>
-      <div class="hero__cta">
-        <button type="button" class="btn btn--primary" id="scroll-checklist">К чеклисту</button>
-      </div>
     </section>
 
     <section class="progress-panel" aria-live="polite">
       <div class="progress-panel__row">
-        <span class="progress-panel__label">Готовность к выбору</span>
+        <span class="progress-panel__label">Готовность</span>
         <strong class="progress-panel__value" id="progress-value">0%</strong>
       </div>
       <div class="progress-bar" aria-hidden="true">
@@ -55,9 +51,9 @@
     <nav class="filters" id="filters" aria-label="Фильтры чеклиста"></nav>
 
     <p class="legend">
-      <span><i class="critical"></i> Критично — лучше не игнорировать</span>
-      <span><i class="important"></i> Важно — сильно влияет на комфорт</span>
-      <span><i class="nice"></i> Полезно — на долгом сроке приятно</span>
+      <span><i class="critical"></i> Критично</span>
+      <span><i class="important"></i> Важно</span>
+      <span><i class="nice"></i> Полезно</span>
     </p>
 
     <main class="checklist" id="checklist" aria-label="Чеклист осмотра квартиры"></main>
@@ -71,6 +67,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script type="module" src="js/app.js?v=3"></script>
+  <script type="module" src="js/app.js?v=4"></script>
 </body>
 </html>

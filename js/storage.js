@@ -1,4 +1,4 @@
-import { STORAGE_KEY } from './data.js?v=3';
+import { STORAGE_KEY } from './data.js?v=4';
 
 export function loadState() {
   try {
