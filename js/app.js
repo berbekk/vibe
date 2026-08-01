@@ -97,6 +97,31 @@ function renderFilters() {
   ).join('');
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
+}
+
+function tipLinkHtml(link) {
+  if (!link?.href || !link?.label) {
+    return '';
+  }
+
+  return `
+    <a
+      class="item__link"
+      href="${escapeHtml(link.href)}"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      ${escapeHtml(link.label)}
+    </a>
+  `;
+}
+
 function itemTemplate(item) {
   const checked = Boolean(state.checked[item.id]);
   const tipId = `tip-${item.id}`;
@@ -104,7 +129,7 @@ function itemTemplate(item) {
   return `
     <article class="item${checked ? ' is-checked' : ''}" data-item-id="${item.id}">
       <label class="item__check">
-        <input type="checkbox" ${checked ? 'checked' : ''} data-check="${item.id}" aria-label="${item.title}">
+        <input type="checkbox" ${checked ? 'checked' : ''} data-check="${item.id}" aria-label="${escapeHtml(item.title)}">
         <span class="item__box" aria-hidden="true">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M3.5 8.2 6.6 11.2 12.5 4.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -113,13 +138,16 @@ function itemTemplate(item) {
       </label>
       <div class="item__content">
         <div class="item__top">
-          <h3 class="item__title">${item.title}</h3>
+          <h3 class="item__title">${escapeHtml(item.title)}</h3>
           <span class="badge badge--${item.priority}">${PRIORITY_LABELS[item.priority]}</span>
         </div>
         <button type="button" class="item__toggle-tip" data-tip-toggle="${tipId}" aria-expanded="false">
           Зачем это важно
         </button>
-        <p class="item__tip" id="${tipId}" hidden>${item.tip}</p>
+        <div class="item__tip" id="${tipId}" hidden>
+          <p>${escapeHtml(item.tip)}</p>
+          ${tipLinkHtml(item.link)}
+        </div>
       </div>
     </article>
   `;

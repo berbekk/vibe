@@ -225,6 +225,23 @@
   display: none;
 }
 
+.item__tip p {
+  margin: 0;
+}
+
+.item__link {
+  display: inline-flex;
+  margin-top: 0.55rem;
+  color: var(--accent-deep);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.item__link:hover {
+  color: var(--accent);
+}
+
 .item__toggle-tip {
   margin-top: 0.45rem;
   padding: 0;

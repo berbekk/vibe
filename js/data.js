@@ -2,6 +2,14 @@
 
 export const STORAGE_KEY = 'nadolgo-checklist-v1';
 
+/** Официальные сервисы — не хардкодить URL по файлам */
+export const OFFICIAL_LINKS = {
+  mvdPassportCheck: {
+    href: 'https://www.gosuslugi.ru/621102/1',
+    label: 'Проверить паспорт через сервис МВД',
+  },
+};
+
 export const CATEGORIES = [
   {
     id: 'location',
@@ -250,6 +258,13 @@ export const CATEGORIES = [
         id: 'leg-owner',
         title: 'Проверен собственник и право на сдачу',
         tip: 'Паспорт + свежая выписка ЕГРН. Если собственников несколько — согласие всех. Если представитель — действующая доверенность.',
+        priority: 'critical',
+      },
+      {
+        id: 'leg-passport',
+        title: 'Паспорт собственника проверен через сервис МВД',
+        tip: 'На Госуслугах откройте проверку действительности паспорта (данные МВД): введите серию, номер, фамилию и имя точно как в документе. Не вводите паспортные данные на сторонних сайтах.',
+        link: OFFICIAL_LINKS.mvdPassportCheck,
         priority: 'critical',
       },
       {
